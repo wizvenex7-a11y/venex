@@ -1,7 +1,7 @@
 {
   "functions": {
-    "bot.php": {
-      "runtime": "vercel-php@0.7.10" // Check for the latest stable version
+    "api/*.php": {
+      "runtime": "vercel-php@0.7.4"
     }
   }
 }
