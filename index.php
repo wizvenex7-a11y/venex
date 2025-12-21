@@ -1,7 +1,7 @@
 <?php
 
 /* ================= BOT CONFIG ================= */
-$token = "YOUR_BOT_TOKEN";
+$token = "8579701610:AAGEVkPUMduT1GQwy408vZKrBwrMfnEWhpM";
 $api   = "https://api.telegram.org/bot$token";
 
 /* ================= HEX CHECK ================= */
