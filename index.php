@@ -45,7 +45,7 @@ if (strpos($decoded, '@Venex444') === false) exit;
 
 /* ================= FORMAT MESSAGE ================= */
 $msg  = "<b>" . htmlspecialchars($decoded, ENT_QUOTES, 'UTF-8') . "</b>";
-$msg .= "\n\n<b>👥 Group Members: $userCount</b>";
+$msg .= "\n\n<b>👥 Users : $userCount</b>";
 
 /* ================= SEND BOT MESSAGE ================= */
 $data = [
