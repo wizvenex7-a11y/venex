@@ -20,14 +20,25 @@ $text       = trim($update["message"]["text"]);
 /* ================= IGNORE /START ================= */
 if ($text === "/start" || $text === "") exit;
 
-/* ================= ONLY ACCEPT HEX ================= */
-if (!isHexBase16($text)) exit;
+/* ================= INVALID CONDITIONS ================= */
+if (!isHexBase16($text) || strlen($text) < 10) {
+    // delete invalid message
+    @file_get_contents(
+        "$api/deleteMessage?chat_id=$chat_id&message_id=$message_id"
+    );
+    exit;
+}
 
 /* ================= DECODE HEX ================= */
 $decoded = hex2bin($text);
-if ($decoded === false || !mb_check_encoding($decoded, 'UTF-8')) exit;
+if ($decoded === false || !mb_check_encoding($decoded, 'UTF-8')) {
+    @file_get_contents(
+        "$api/deleteMessage?chat_id=$chat_id&message_id=$message_id"
+    );
+    exit;
+}
 
-/* ================= DELETE USER MESSAGE ================= */
+/* ================= DELETE VALID USER MESSAGE ================= */
 @file_get_contents(
     "$api/deleteMessage?chat_id=$chat_id&message_id=$message_id"
 );
@@ -57,3 +68,5 @@ file_get_contents(
 );
 
 ?>
+
+
