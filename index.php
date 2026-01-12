@@ -17,14 +17,8 @@ $chat_id    = $update["message"]["chat"]["id"];
 $message_id = $update["message"]["message_id"];
 $text       = trim($update["message"]["text"]);
 
-/* ================= KEEP /START ================= */
-if ($text === "/start") exit;
-if ($text === "") exit;
-
-/* ================= DELETE USER MESSAGE ================= */
-@file_get_contents(
-    "$api/deleteMessage?chat_id=$chat_id&message_id=$message_id"
-);
+/* ================= IGNORE /START ================= */
+if ($text === "/start" || $text === "") exit;
 
 /* ================= ONLY ACCEPT HEX ================= */
 if (!isHexBase16($text)) exit;
@@ -33,8 +27,10 @@ if (!isHexBase16($text)) exit;
 $decoded = hex2bin($text);
 if ($decoded === false || !mb_check_encoding($decoded, 'UTF-8')) exit;
 
-/* ================= CHECK AFTER DECODE ================= */
-if (strpos($decoded, '@Venex444') === false) exit;
+/* ================= DELETE USER MESSAGE ================= */
+@file_get_contents(
+    "$api/deleteMessage?chat_id=$chat_id&message_id=$message_id"
+);
 
 /* ================= FORMAT MESSAGE ================= */
 $msg = "<b>" . htmlspecialchars($decoded, ENT_QUOTES, 'UTF-8') . "</b>";
