@@ -1,6 +1,6 @@
 <?php
 
-/* ================= BOT CONFIG ================= */
+/* ==C=============== BOT CONFIG ================= */
 $token = "8579701610:AAGEVkPUMduT1GQwy408vZKrBwrMfnEWhpM";
 $api   = "https://api.telegram.org/bot$token";
 
@@ -68,5 +68,6 @@ file_get_contents(
 );
 
 ?>
+
 
 
