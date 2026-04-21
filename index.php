@@ -3,9 +3,9 @@
 /* == BOT CONFIG == */
 $token = "8533368939:AAFyGHf6cIoMGwK3WOIM63tRjWQJV5mdCY0";
 $api   = "https://api.telegram.org/bot$token";
-$bot_user = "Venex444_bot"; // Your bot username from the HTML
+$bot_user = "Venex444_bot"; 
 
-/* == HEX CHECK == */
+/* == HELPER: HEX CHECK == */
 function isHexBase16($s) {
     return $s !== "" && ctype_xdigit($s) && strlen($s) % 2 === 0;
 }
@@ -18,26 +18,7 @@ $chat_id    = $update["message"]["chat"]["id"];
 $message_id = $update["message"]["message_id"];
 $text       = trim($update["message"]["text"]);
 
-/* == HANDLE / (NEW FEATURE: DIRECT LINK COPY) == */
-if ($text === "/") {
-    // Delete the user's / message to keep the chat clean
-    @file_get_contents("$api/deleteMessage?chat_id=$chat_id&message_id=$message_id");
-
-    $link = "https://t.me/$bot_user";
-    $msg = "🔗 <b>Direct Bot Link</b> (Tap to copy):\n\n";
-    $msg .= "<code>$link</code>"; // This makes it Monospace and Tap-to-copy
-
-    $data = [
-        'chat_id'    => $chat_id,
-        'text'       => $msg,
-        'parse_mode' => 'HTML'
-    ];
-    
-    file_get_contents("$api/sendMessage?" . http_build_query($data));
-    exit;
-}
-
-/* == HANDLE /START == */
+/* ================= HANDLE /START ================= */
 if ($text === "/start") {
     $first_name = $update["message"]["from"]["first_name"] ?? '';
     $last_name  = $update["message"]["from"]["last_name"] ?? '';
@@ -48,28 +29,55 @@ if ($text === "/start") {
     $msg .= "🆔 User ID: <code>" . htmlspecialchars($user_id, ENT_QUOTES, 'UTF-8') . "</code>\n\n";
     $msg .= "🔔 Bot News : @WizVenex";
 
-    $data = ['chat_id' => $chat_id, 'text' => $msg, 'parse_mode' => 'HTML'];
-    file_get_contents("$api/sendMessage?" . http_build_query($data));
+    file_get_contents("$api/sendMessage?" . http_build_query(['chat_id' => $chat_id, 'text' => $msg, 'parse_mode' => 'HTML']));
     exit;
 }
 
-/* == IGNORE EMPTY == */
+/* ================= HANDLE / TEXT (ENCODE TO LINK) ================= */
+if (strpos($text, '/') === 0) {
+    // Get text after the /
+    $plainText = trim(substr($text, 1));
+
+    if (!empty($plainText)) {
+        // Delete the user's command message
+        @file_get_contents("$api/deleteMessage?chat_id=$chat_id&message_id=$message_id");
+
+        // Convert Text to Hex (Base16)
+        $hex = strtoupper(bin2hex($plainText));
+        
+        // Generate the Mono Link
+        $link = "https://t.me/$bot_user?text=$hex";
+        
+        $msg = "🔗 <b>Generated Base16 Link:</b>\n\n";
+        $msg .= "<code>$link</code>"; // Mono copy format
+
+        $data = [
+            'chat_id'    => $chat_id,
+            'text'       => $msg,
+            'parse_mode' => 'HTML'
+        ];
+        
+        file_get_contents("$api/sendMessage?" . http_build_query($data));
+        exit;
+    }
+}
+
+/* ================= IGNORE EMPTY ================= */
 if ($text === "") exit;
 
-/* == INVALID HEX CONDITIONS == */
+/* ================= HANDLE HEX DECODING ================= */
 if (!isHexBase16($text) || strlen($text) < 10) {
     @file_get_contents("$api/deleteMessage?chat_id=$chat_id&message_id=$message_id");
     exit;
 }
 
-/* == DECODE HEX == */
 $decoded = hex2bin($text);
 if ($decoded === false || !mb_check_encoding($decoded, 'UTF-8')) {
     @file_get_contents("$api/deleteMessage?chat_id=$chat_id&message_id=$message_id");
     exit;
 }
 
-/* == SUCCESS: DELETE & SEND DECODED == */
+// Success: Delete hex and send plain text
 @file_get_contents("$api/deleteMessage?chat_id=$chat_id&message_id=$message_id");
 
 $data = [
