@@ -3,7 +3,7 @@
 /* == BOT CONFIG == */
 $token = "8533368939:AAFyGHf6cIoMGwK3WOIM63tRjWQJV5mdCY0";
 $api   = "https://api.telegram.org/bot$token";
-$bot_user = "Venex444_bot"; 
+$bot_user = "Venex444_bot";  
 
 /* == HELPER: HEX CHECK == */
 function isHexBase16($s) {
