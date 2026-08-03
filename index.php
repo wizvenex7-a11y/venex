@@ -1,9 +1,9 @@
 <?php
 
 /* == BOT CONFIG == */
-$token = "8693335261:AAFxLBaVoGHumFZYf5GnanNqfpyNHpcEwvU";
+$token = "8851337255:AAFGrEE-DPAiJDX7pnNsF7kzDnwYmue8gVQ";
 $api   = "https://api.telegram.org/bot$token";
-$bot_user = "Venex444_Bot";  
+$bot_user = "Venex477_Bot";  
 
 /* == HELPER: HEX CHECK == */
 function isHexBase16($s) {
